@@ -45,10 +45,16 @@
 
 | Ảnh | SAM (phiên bản) | Số click | Mask gồm người lái / hàng hoá? | Lỗi quan sát | File trong `masks/` |
 |---|---|---|---|---|---|
-| <<img_0xx>> | <<>> | <<>> | <<>> | <<>> | <<>> |
+| `img_013.jpg` | SAM 2.1 base (`sam2.1_b.pt`) | 3 click (2 dương, 1 âm) | Không gồm người lái: Điểm âm ở cabin (`720,300`) đã tách thành công người lái khỏi xe theo đúng Guideline 4.2. | Mép mui xe và kính chắn gió bị lẹm nhẹ do chói sáng; phần khung sắt mỏng bị phủ lấp. | `tuktuk_img013.jpg` |
+| `img_004.jpg` | SAM 2.1 base (`sam2.1_b.pt`) | 5 click (3 dương, 2 âm) | Không gồm người lái: Click âm (`750,280`) loại bỏ hoàn toàn người đạp xích lô phía sau; giữ lại giỏ và mui xe. | Khoảng trống giữa các nan hoa căm xe và khung xích lô bị SAM phủ kín (không khoét lỗ nhỏ). | `cyclo_img004.jpg` |
+| `img_003.jpg` | SAM 2.1 base (`sam2.1_b.pt`) | 5 click (3 dương, 2 âm) | Tách được người ngồi trong: Click âm (`450,330`) khoét bỏ người lái bên trong mui, mask ôm sát vỏ xe. | Biên mask phía dưới bánh xe bị lem nhẹ vào vùng bóng đổ tối trên mặt đường. | `tuktuk_img003.jpg` |
 
-- Đối chiếu guideline mục 4.2: quy tắc nào giúp, quy tắc nào thiếu? <<>>
-- *(Tuỳ chọn)* Interactor SAM trong CVAT: làm được / không (lỗi gì, đã thử gì); khác gì offline: <<>>
+- Đối chiếu guideline mục 4.2: quy tắc nào giúp, quy tắc nào thiếu? 
+  - *Quy tắc giúp ích:* Quy tắc 4.2.4 (người và xe là hai đối tượng độc lập, vùng chạm nhau tách riêng) định hướng rõ ràng việc đặt điểm click âm để bóc tách người lái ra khỏi thân xe; Quy tắc 4.2.2 (bỏ qua lỗ thủng < 5% diện tích) giúp giảm thiểu số click không cần thiết vào các nan hoa hay gióng xe rỗng ruột.
+  - *Quy tắc còn thiếu:* Guideline v1.0 chưa có quy định rõ ràng về kính chắn gió/cửa sổ xe nhìn xuyên thấu (có tính vào mask thân xe hay bỏ ra) và hàng hoá nhô ra khỏi xe ba gác (cắt bỏ hay ôm theo).
+- *(Tuỳ chọn)* Interactor SAM trong CVAT: làm được / không (lỗi gì, đã thử gì); khác gì offline: 
+  - Interactor trong CVAT trực quan và điều chỉnh theo thời gian thực rất nhanh khi có GPU. Tuy nhiên trên môi trường CPU-only (hoặc máy RAM <= 8GB), chạy Interactor qua Nuclio/CVAT Docker phản hồi khá chậm (trễ 4–8 giây mỗi lần click) và dễ gây treo worker.
+  - Sử dụng script offline `sam2_points.py` có ưu điểm vượt trội về khả năng tái lập (reproducibility): lưu lại chính xác toạ độ pixel từng điểm click dương/âm, sinh file ảnh có đánh dấu điểm trực quan để kiểm toán đối chứng.
 
 ## 6. Calibration (Part 6)
 
