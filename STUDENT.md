@@ -5,7 +5,7 @@
 - Lớp (L2 / L3 / khác): L2
 - Tài khoản GitHub: https://github.com/justAchillGuy8386
 - Repo bài nộp (URL): https://github.com/justAchillGuy8386/K5-L2-Day08-NguyenSyKien-2A202603245-AI-Assisted-Labeling
-- Commit chốt bài (hash): # 887041f
+- Commit chốt bài (hash): #887041f
 - Máy: Win 11, GPU không có
 - CVAT (Docker): v2.81.0
 
