@@ -6,14 +6,14 @@
 
 | Lớp | Model + cỡ | Ngưỡng | Vì sao (dẫn `run_id` trong `model_log.csv`) |
 |---|---|---|---|
-| person / bicycle / motorbike / car / bus / truck | YOLO26m | mặc định 0.3 | Quét threshold_sweep trên 4 ảnh gold không đạt recall 90% ở conf <= 0.5 hoặc lớp có quá ít vật (< 5 vật như bus/truck/bicycle). Giữ ngưỡng mặc định 0.3 theo run r01. |
-| three_wheeler | YOLOE-26s, prompt: three_wheeler | 0.15 | Ngưỡng 0.15 đạt recall 100% (>= 90%) và precision 78% trên 7 vật gold trong threshold_sweep.csv (run r02). |
+| person / bicycle / motorbike / car / bus / truck | YOLO26m | mặc định 0.3 | Quét threshold_sweep trên 4 ảnh gold cho thấy các lớp person, motorbike, car không đạt recall 90% ở bất kỳ ngưỡng nào <= 0.5 (tối đa 76-88%); các lớp bicycle (3 vật), truck (1 vật), bus (0 vật) có < 5 mẫu nên không đủ ý nghĩa thống kê để chọn ngưỡng riêng. Thử nghiệm r03 (conf 0.25) sinh nhiều box rác còn r04 (conf 0.5) bỏ sót nặng nề (-76 box). Do đó giữ conf mặc định 0.3 theo run r03/r04. |
+| three_wheeler | YOLOE-26s, prompt: three_wheeler | 0.15 | Thử nghiệm r05 trên pilot cho thấy YOLOE bắt chính xác tuk-tuk/cyclo mà COCO bỏ qua. Quét ngưỡng trên gold cho thấy ngưỡng 0.15 đạt recall 100% (>= 90%) và precision 78% trên 7 vật gold (threshold_sweep.csv). |
 
 - Lệnh `merge_prelabels.py` đã dùng (dán nguyên): `python scripts/merge_prelabels.py work/prelabel/yoloe_all/pre.coco.json work/prelabel/y26_all/pre.coco.json --thr "three_wheeler=0.15" --conf 0.3 --iou 0.6 --split "batch,gold" --out work/prelabel/merged_review/pre.coco.json`
 - **Phiên bản SAM bạn chọn** (SAM 1 / 2.1 / 3) và lý do: Chọn SAM 2.1 (`sam2.1_b.pt` / `sam2.1_t.pt`) vì cân bằng tối ưu giữa độ chính xác bám biên polygon mask, tốc độ xử lý nhanh và độ ổn định trên máy local, không bị rào cản tài khoản gated như SAM 3.
 - Lỗi nào **không sửa được bằng đổi ngưỡng** (ví dụ tuk-tuk bị gọi `car`)? Sửa thế nào? Lỗi phân loại sai bản chất do closed-set detector: YOLO26 huấn luyện trên COCO không có nhãn `three_wheeler` nên dù đổi ngưỡng thế nào thì tuk-tuk/xích lô/ba gác vẫn bị gán nhầm thành `car` hoặc `truck`. Cách sửa: Phải kết hợp mô hình open-vocabulary (YOLOE) với text prompt riêng cho `three_wheeler`, khi gộp nhãn (`merge_prelabels`) thiết lập IoU >= 0.6 để nhãn `three_wheeler` ghi đè lên box `car/truck` của YOLO26.
 - Box **điểm cao mà sai** hoặc **điểm thấp mà đúng** (ảnh nào): Điểm cao mà sai: Ở `img_003.jpg`, xe tuk-tuk bị YOLO26 nhận diện thành `car` với độ tin cậy rất cao (0.87). Điểm thấp mà đúng: Ở `img_013.jpg`, YOLOE phát hiện tuk-tuk với điểm tin cậy chỉ 0.18 nhưng box bao đúng xe thực tế.
-- Giới hạn: chọn ngưỡng trên chính gold (4 ảnh) nên số đo máy trên gold là lạc quan: Bộ ảnh gold chỉ gồm 4 ảnh (73 đối tượng). Việc tối ưu ngưỡng và đánh giá trên cùng tập dữ liệu này dẫn đến hiện tượng in-sample bias (overfitting dữ liệu nhỏ); các lớp ít mẫu như bus, truck không đủ ý nghĩa thống kê để chọn ngưỡng riêng.
+- Giới hạn: chọn ngưỡng trên chính gold (4 ảnh) nên số đo máy trên gold là lạc quan: Hai giới hạn bắt buộc phải thừa nhận: (1) Chọn và chấm trên cùng dữ liệu: ngưỡng được tối ưu hóa trên chính 4 ảnh gold rồi đo lại máy trên gold nên precision/recall là con số lạc quan (in-sample bias); (2) Mẫu nhỏ: chỉ có 4 ảnh gold (73 đối tượng), các lớp hiếm (bus, truck, bicycle) có dưới 5 vật nên kết luận thống kê rất yếu và không thể chọn ngưỡng riêng.
 
 ## 2. AI error profile (từ `qc/review_stats.md`)
 
