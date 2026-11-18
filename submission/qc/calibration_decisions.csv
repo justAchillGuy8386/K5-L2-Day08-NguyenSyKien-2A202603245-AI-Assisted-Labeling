@@ -1,1 +1,5 @@
 case_id,image,nguon,van_de,quyet_dinh,quy_tac_ghi_vao_guideline,phien_ban_guideline
+CAL-01,img_005.jpg|img_018.jpg,cau_hoi_mo,"Xe dap dien / xe may dien nho chua ro phan loai bicycle hay motorbike","Phan loai theo kieu dang: co ban dap tro luc la bicycle; dang scooter/khong ban dap la motorbike","muc 2: xe dap dien co ban dap -> bicycle; xe may dien -> motorbike",v1.1
+CAL-02,img_013.jpg|img_003.jpg,loi_may,"YOLO26 nham tuk-tuk va xe ba gac thanh car hoac truck","Moi phuong tien 3 banh (tuk-tuk, cyclo, ba gac) bat buoc gan three_wheeler, khong theo nhan may","muc 2 & 4.1: xe ba banh co mui van la three_wheeler",v1.1
+CAL-03,img_004.jpg|img_013.jpg,cau_hoi_mo,"Nguoi ngoi lai va hanh khach trong xe ba banh co mui che tach hay gop","Tach box person doc lap neu nhin thay >= 20% than nguoi; bi che > 80% khong gan","muc 4.1.4: nguoi trong xe ba banh nhin thay >= 20% co the phai co box person rieng",v1.1
+CAL-04,img_028.jpg|img_005.jpg,bay_lot,"Cum xe may do san sat nhau o xa bi bo sot hoac sai lop","Ap dung ignore_region cho cum >= 5 xe do sat nhau o xa co chieu cao < 20px","muc 4.1.6: cum >= 5 xe may san sat o xa cao < 20px ve mot box ignore_region",v1.1
